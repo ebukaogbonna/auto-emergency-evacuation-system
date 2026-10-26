@@ -39,6 +39,7 @@ uvicorn>=0.28.0
 pydantic>=2.6.0
 psycopg2-binary>=2.9.9
 mcp<2,>0.9.0
+twilio>=8.0.0
 EOF
 
 python3 -m venv .venv
@@ -69,3 +70,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role="roles/bigquery.dataViewer"
 
 echo "IAM configuration complete! Your agents are authorized."
+
+# Set up SMS notification
+#echo -n "ACa3f54cb26762970ec5402a1ab4f09234" | gcloud secrets create twilio-sid --data-file=-
+#echo -n "5c3a15ef5f3380bbbe337eda73b56c7e" | gcloud secrets create twilio-token --data-file=-

@@ -95,15 +95,6 @@ if __name__ == "__main__":
     mcp.run(transport='stdio')
 EOF
 
-#set -e
-#echo "🚀 Starting Hazard MCP Server in background..."
-#touch ~/emergency-agent-system/mcp_servers/mcp_server.log
-#python3 mcp_servers/hazard_mcp_server.py > mcp_server.log 2>&1 &
-#MCP_PID=$!
-#echo "Your MCP server PID is ${MCP_PID}" >> mcp_server.log
-## Give the server 2 seconds to spin up
-#sleep 2
-
 set -e
 
 # Export Twilio credentials 
