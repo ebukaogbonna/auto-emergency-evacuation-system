@@ -101,6 +101,7 @@ set -e
 export TWILIO_ACCOUNT_SID="ACa3f54cb26762970ec5402a1ab4f09234"
 export TWILIO_AUTH_TOKEN="5c3a15ef5f3380bbbe337eda73b56c7e"
 export TWILIO_PHONE_NUMBER="+17372508034"
+export TWILIO_APP_PASSWORD="ghap mztf pxxg bclh"
 
 # Create ADK orchestration & multi-Agent Logic 
 cd ~/emergency-agent-system/agents
