@@ -13,7 +13,9 @@ if [ -f ~/auto-emergency-evacuation-system/.venv/bin/activate ]; then
 fi
 
 # Export Bell Email-to-SMS Gateway & SMTP credentials (loads ~/.smtp_credentials if present)
-if [ -f ~/.smtp_credentials ]; then
+if [ -f ~/auto-emergency-evacuation-system/.smtp_credentials ]; then
+    source ~/auto-emergency-evacuation-system/.smtp_credentials
+elif [ -f ~/.smtp_credentials ]; then
     source ~/.smtp_credentials
 fi
 export SMTP_SENDER_EMAIL="${SMTP_SENDER_EMAIL:-your_email@gmail.com}"
@@ -26,8 +28,8 @@ export TWILIO_AUTH_TOKEN="5c3a15ef5f3380bbbe337eda73b56c7e"
 export TWILIO_PHONE_NUMBER="+17372508034"
 export TARGET_MOBILE_NUMBER="+14373263351"
 
-mkdir -p ~/emergency-agent-system/demo
-cd ~/emergency-agent-system/demo
+mkdir -p ~/auto-emergency-evacuation-system/emergency-agent-system/demo
+cd ~/auto-emergency-evacuation-system/emergency-agent-system/demo
 
 cat > inject_demo_hazard.py << 'INJ_EOF'
 import os
@@ -56,10 +58,10 @@ if __name__ == "__main__":
 INJ_EOF
 
 # 1. Inject live hazard
-python3 ~/emergency-agent-system/demo/inject_demo_hazard.py
+python3 ~/auto-emergency-evacuation-system/emergency-agent-system/demo/inject_demo_hazard.py
 
-# 2. Run from ~/emergency-agent-system root
-cd ~/emergency-agent-system
+# 2. Run from ~/auto-emergency-evacuation-system/emergency-agent-system root
+cd ~/auto-emergency-evacuation-system/emergency-agent-system
 
 echo "🚀 Starting Hazard MCP Server in background..."
 python3 mcp_servers/hazard_mcp_server.py > mcp_server.log 2>&1 &
@@ -69,7 +71,7 @@ MCP_PID=$!
 sleep 2
 
 echo "▶️ Executing Multi-Agent Orchestrator Pipeline..."
-python3 ~/emergency-agent-system/agents/main_orchestrator.py
+python3 ~/auto-emergency-evacuation-system/emergency-agent-system/agents/main_orchestrator.py
 
 echo "🧹 Cleaning up background MCP server (PID: $MCP_PID)..."
 kill $MCP_PID 2>/dev/null || true

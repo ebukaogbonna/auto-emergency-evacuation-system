@@ -32,7 +32,7 @@ bq_client = bigquery.Client(project=project_id)
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, "emergency-coordination-bus") if project_id else None
 
-MCP_SERVER_PATH = os.path.expanduser("~/emergency-agent-system/mcp_servers/hazard_mcp_server.py")
+MCP_SERVER_PATH = os.path.expanduser("~/auto-emergency-evacuation-system/emergency-agent-system/mcp_servers/hazard_mcp_server.py")
 
 
 class HazardMonitoringAgent:

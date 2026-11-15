@@ -13,10 +13,10 @@ if [ -f ~/auto-emergency-evacuation-system/.venv/bin/activate ]; then
 fi
 
 # Create project workspace directory structure
-mkdir -p ~/emergency-agent-system/{mcp_servers,agents,database,demo}
+mkdir -p ~/auto-emergency-evacuation-system/emergency-agent-system/{mcp_servers,agents,database,demo}
 
 # Create BigQuery dataset, raw telemetry tables, and train a BQML model to predict shelter overflow risks based on historical evacuation rates
-cd ~/emergency-agent-system/database
+cd ~/auto-emergency-evacuation-system/emergency-agent-system/database
 
 cat > setup_bqml.sql << 'SQL_EOF'
 CREATE SCHEMA IF NOT EXISTS emergency_ops OPTIONS(location='US');
@@ -74,10 +74,10 @@ FROM
 SQL_EOF
 
 # Execute the BigQuery loop for data and predictive model scaffolding
-bq query --use_legacy_sql=false < ~/emergency-agent-system/database/setup_bqml.sql || echo "Note: BigQuery DDL skipped (using MCP/BQML fallback)."
+bq query --use_legacy_sql=false < ~/auto-emergency-evacuation-system/emergency-agent-system/database/setup_bqml.sql || echo "Note: BigQuery DDL skipped (using MCP/BQML fallback)."
 
 # Create the Hazard & Perimeter Monitoring Agent (The "Eyes") MCP server
-cd ~/emergency-agent-system/mcp_servers
+cd ~/auto-emergency-evacuation-system/emergency-agent-system/mcp_servers
 
 cat > hazard_mcp_server.py << 'MCP_EOF'
 import os
@@ -112,7 +112,9 @@ if __name__ == "__main__":
 MCP_EOF
 
 # Export Bell Email-to-SMS Gateway & SMTP credentials (loads ~/.smtp_credentials if present)
-if [ -f ~/.smtp_credentials ]; then
+if [ -f ~/auto-emergency-evacuation-system/.smtp_credentials ]; then
+    source ~/auto-emergency-evacuation-system/.smtp_credentials
+elif [ -f ~/.smtp_credentials ]; then
     source ~/.smtp_credentials
 fi
 export SMTP_SENDER_EMAIL="${SMTP_SENDER_EMAIL:-your_email@gmail.com}"
@@ -126,7 +128,7 @@ export TWILIO_PHONE_NUMBER="+17372508034"
 export TARGET_MOBILE_NUMBER="+14373263351"
 
 # Create ADK orchestration & multi-Agent Logic
-cd ~/emergency-agent-system/agents
+cd ~/auto-emergency-evacuation-system/emergency-agent-system/agents
 
 cat > main_orchestrator.py << 'ORCH_EOF'
 # agents/main_orchestrator.py
@@ -163,7 +165,7 @@ bq_client = bigquery.Client(project=project_id)
 publisher = pubsub_v1.PublisherClient()
 topic_path = publisher.topic_path(project_id, "emergency-coordination-bus") if project_id else None
 
-MCP_SERVER_PATH = os.path.expanduser("~/emergency-agent-system/mcp_servers/hazard_mcp_server.py")
+MCP_SERVER_PATH = os.path.expanduser("~/auto-emergency-evacuation-system/emergency-agent-system/mcp_servers/hazard_mcp_server.py")
 
 
 class HazardMonitoringAgent:
